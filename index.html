@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Rodeo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: normal;
+            letter-spacing: 2px;
+        }
+
+        .controls {
+            background: #111;
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input, select, button {
+            padding: 8px 12px;
+            border: 1px solid #555;
+            background: #000;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        select {
+            min-width: 200px;
+        }
+
+        select option {
+            background: #000;
+            color: #fff;
+        }
+
+        button {
+            background: #fff;
+            color: #000;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #ccc;
+        }
+
+        .crypto-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1px;
+            background: #333;
+            border: 1px solid #333;
+            margin-bottom: 30px;
+        }
+
+        .crypto-card {
+            background: #000;
+            padding: 20px;
+        }
+
+        .crypto-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 8px;
+        }
+
+        .crypto-name {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .crypto-price {
+            font-size: 0.9rem;
+        }
+
+        .crypto-change {
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+
+        .positive {
+            color: #fff;
+        }
+
+        .negative {
+            color: #666;
+        }
+
+        .note-info {
+            margin: 8px 0;
+            font-size: 0.75rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .volume-control, .beat-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+        }
+
+        .volume-control label, .beat-control label {
+            font-size: 0.7rem;
+            min-width: 50px;
+        }
+
+        .volume-slider, .beat-slider {
+            flex: 1;
+            background: #222;
+        }
+
+        .volume-value, .beat-value {
+            font-size: 0.7rem;
+            min-width: 30px;
+        }
+
+        .beat-info {
+            font-size: 0.7rem;
+            color: #999;
+            margin: 5px 0;
+        }
+
+        .effects-section {
+            margin-top: 15px;
+            border-top: 1px solid #222;
+            padding-top: 15px;
+        }
+
+        .effects-title {
+            font-size: 0.7rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .effect-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: #111;
+            border: 1px solid #222;
+        }
+
+        .effect-select {
+            flex: 1;
+            padding: 4px 6px;
+            font-size: 0.7rem;
+            min-width: 80px;
+        }
+
+        .effect-control {
+            flex: 1;
+            font-size: 0.7rem;
+        }
+
+        .effect-label {
+            min-width: 25px;
+            font-size: 0.65rem;
+            text-align: center;
+            color: #999;
+        }
+
+        .add-effect-btn {
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .add-effect-btn:hover {
+            background: #444;
+            color: #fff;
+        }
+
+        .remove-effect-btn {
+            background: #222;
+            color: #fff;
+            border: 1px solid #333;
+            padding: 2px 6px;
+            font-size: 0.6rem;
+            min-width: 20px;
+        }
+
+        .remove-effect-btn:hover {
+            background: #333;
+            color: #fff;
+        }
+
+        .remove-btn {
+            background: #222;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            margin-top: 8px;
+        }
+
+        .remove-btn:hover {
+            background: #333;
+            color: #fff;
+        }
+
+        .master-controls {
+            background: #111;
+            border: 1px solid #333;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .master-volume {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .master-volume label {
+            min-width: 100px;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            background: #222;
+            border: 1px solid #333;
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        #toggleAudio {
+            padding: 12px 24px;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .control-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .crypto-list {
+                grid-template-columns: 1fr;
+            }
+
+            .master-volume {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CRYPTO RODEO</h1>
+        </div>
+
+        <div class="controls">
+            <div class="control-row">
+                <div class="control-group">
+                    <label for="cryptoSelect">Cryptocurrency</label>
+                    <select id="cryptoSelect">
+                        <option value="bitcoin">Bitcoin (BTC)</option>
+                        <option value="ethereum">Ethereum (ETH)</option>
+                        <option value="binancecoin">Binance Coin (BNB)</option>
+                        <option value="solana">Solana (SOL)</option>
+                        <option value="cardano">Cardano (ADA)</option>
+                        <option value="avalanche-2">Avalanche (AVAX)</option>
+                        <option value="polkadot">Polkadot (DOT)</option>
+                        <option value="chainlink">Chainlink (LINK)</option>
+                        <option value="dogecoin">Dogecoin (DOGE)</option>
+                        <option value="polygon">Polygon (MATIC)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="noteSelect">Musical Note</label>
+                    <select id="noteSelect">
+                        <option value="C4">C4 (261.63 Hz)</option>
+                        <option value="D4">D4 (293.66 Hz)</option>
+                        <option value="E4">E4 (329.63 Hz)</option>
+                        <option value="F4">F4 (349.23 Hz)</option>
+                        <option value="G4">G4 (392.00 Hz)</option>
+                        <option value="A4">A4 (440.00 Hz)</option>
+                        <option value="B4">B4 (493.88 Hz)</option>
+                        <option value="C5">C5 (523.25 Hz)</option>
+                    </select>
+                </div>
+                <button id="addCrypto">ADD</button>
+            </div>
+        </div>
+
+        <div id="cryptoList" class="crypto-list"></div>
+
+        <div class="master-controls">
+            <div class="master-volume">
+                <label for="masterVolume">MASTER VOLUME</label>
+                <input type="range" id="masterVolume" min="0" max="1" step="0.1" value="0.3" class="volume-slider">
+                <span id="masterVolumeValue">30%</span>
+            </div>
+            <button id="toggleAudio">START AUDIO</button>
+            <div id="status" class="status">
+                WELCOME TO CRYPTO RODEO. ADD CRYPTOCURRENCIES AND CLICK START AUDIO TO BEGIN.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class CryptoAudioGenerator {
+            constructor() {
+                this.audioContext = null;
+                this.cryptos = new Map();
+                this.isPlaying = false;
+                this.updateInterval = null;
+                this.masterGain = null;
+                this.effectCounter = 0;
+                
+                this.noteFrequencies = {
+                    'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23,
+                    'G4': 392.00, 'A4': 440.00, 'B4': 493.88, 'C5': 523.25
+                };
+                
+                this.initializeEventListeners();
+            }
+
+            initializeEventListeners() {
+                document.getElementById('addCrypto').addEventListener('click', () => this.addCrypto());
+                document.getElementById('toggleAudio').addEventListener('click', () => this.toggleAudio());
+                document.getElementById('masterVolume').addEventListener('input', (e) => this.updateMasterVolume(e.target.value));
+            }
+
+            async initializeAudioContext() {
+                if (!this.audioContext) {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.masterGain = this.audioContext.createGain();
+                    this.masterGain.connect(this.audioContext.destination);
+                    this.masterGain.gain.value = 0.5; // Increase default volume
+                    console.log('Audio context created:', this.audioContext.state);
+                }
+                
+                if (this.audioContext.state === 'suspended') {
+                    await this.audioContext.resume();
+                    console.log('Audio context resumed:', this.audioContext.state);
+                }
+                
+                // Test audio is working
+                this.testAudio();
+            }
+
+            testAudio() {
+                console.log('Testing audio...');
+                const testOsc = this.audioContext.createOscillator();
+                const testGain = this.audioContext.createGain();
+                
+                testOsc.frequency.value = 440; // A4
+                testGain.gain.value = 0.1;
+                
+                testOsc.connect(testGain);
+                testGain.connect(this.masterGain);
+                
+                testOsc.start();
+                testOsc.stop(this.audioContext.currentTime + 0.1);
+                
+                console.log('Test tone played');
+            }
+
+            addCrypto() {
+                const cryptoSelect = document.getElementById('cryptoSelect');
+                const noteSelect = document.getElementById('noteSelect');
+                
+                const cryptoId = cryptoSelect.value;
+                const cryptoName = cryptoSelect.options[cryptoSelect.selectedIndex].text;
+                const note = noteSelect.value;
+                
+                if (this.cryptos.has(cryptoId)) {
+                    this.updateStatus('THIS CRYPTOCURRENCY IS ALREADY ADDED');
+                    return;
+                }
+                
+                const cryptoData = {
+                    id: cryptoId,
+                    name: cryptoName,
+                    note: note,
+                    frequency: this.noteFrequencies[note],
+                    price: 0,
+                    change: 0,
+                    volume24h: 0,
+                    oscillator: null,
+                    gainNode: null,
+                    pulseNode: null,
+                    dryGainNode: null,
+                    wetGainNode: null,
+                    mixerNode: null,
+                    volume: 0.5,
+                    beatVolume: 0.3,
+                    wetDryMix: 0.5,
+                    effects: [],
+                    beatInterval: null
+                };
+                
+                this.cryptos.set(cryptoId, cryptoData);
+                this.renderCryptoCard(cryptoData);
+                this.fetchCryptoData();
+                this.updateStatus(`ADDED ${cryptoName.split(' ')[0].toUpperCase()}`);
+            }
+
+            renderCryptoCard(crypto) {
+                const cryptoList = document.getElementById('cryptoList');
+                
+                const card = document.createElement('div');
+                card.className = 'crypto-card';
+                card.id = `crypto-${crypto.id}`;
+                
+                card.innerHTML = `
+                    <div class="crypto-header">
+                        <div class="crypto-name">${crypto.name}</div>
+                        <div class="crypto-price" id="price-${crypto.id}">LOADING...</div>
+                    </div>
+                    <div class="crypto-change" id="change-${crypto.id}">-</div>
+                    <div class="note-info">${crypto.note} (${crypto.frequency.toFixed(2)} Hz)</div>
+                    <div class="volume-control">
+                        <label>VOL</label>
+                        <input type="range" id="volume-${crypto.id}" min="0" max="1" step="0.1" value="${crypto.volume}" class="volume-slider">
+                        <span id="volumeValue-${crypto.id}" class="volume-value">${Math.round(crypto.volume * 100)}%</span>
+                    </div>
+                    <div class="beat-control">
+                        <label>PULSE</label>
+                        <input type="range" id="beat-${crypto.id}" min="0" max="1" step="0.1" value="${crypto.beatVolume}" class="beat-slider">
+                        <span id="beatValue-${crypto.id}" class="beat-value">${Math.round(crypto.beatVolume * 100)}%</span>
+                    </div>
+                    <div class="beat-control">
+                        <label>W/D</label>
+                        <input type="range" id="wetdry-${crypto.id}" min="0" max="1" step="0.1" value="0.5" class="beat-slider">
+                        <span id="wetdryValue-${crypto.id}" class="beat-value">50%</span>
+                    </div>
+                    <div class="beat-info" id="beatInfo-${crypto.id}">VOLUME: LOADING...</div>
+                    <div class="effects-section">
+                        <div class="effects-title">EFFECTS CHAIN</div>
+                        <div id="effects-${crypto.id}"></div>
+                        <button class="add-effect-btn" onclick="cryptoGenerator.addEffect('${crypto.id}')">ADD EFFECT</button>
+                    </div>
+                    <button class="remove-btn" onclick="cryptoGenerator.removeCrypto('${crypto.id}')">REMOVE</button>
+                `;
+                
+                cryptoList.appendChild(card);
+                
+                document.getElementById(`volume-${crypto.id}`).addEventListener('input', (e) => {
+                    this.updateCryptoVolume(crypto.id, e.target.value);
+                });
+
+                document.getElementById(`beat-${crypto.id}`).addEventListener('input', (e) => {
+                    this.updateBeatVolume(crypto.id, e.target.value);
+                });
+
+                document.getElementById(`wetdry-${crypto.id}`).addEventListener('input', (e) => {
+                    this.updateWetDryMix(crypto.id, e.target.value);
+                });
+            }
+
+            addEffect(cryptoId) {
+                const crypto = this.cryptos.get(cryptoId);
+                if (!crypto) return;
+
+                this.effectCounter++;
+                const effectId = `effect-${cryptoId}-${this.effectCounter}`;
+                const effect = {
+                    id: effectId,
+                    type: 'filter',
+                    node: null,
+                    param1: 0.5,
+                    param2: 0.5
+                };
+
+                crypto.effects.push(effect);
+                this.renderEffect(cryptoId, effect);
+                
+                if (this.isPlaying) {
+                    this.rebuildAudioChain(cryptoId);
+                }
+
+                this.updateStatus('ADDED EFFECT');
+            }
+
+            renderEffect(cryptoId, effect) {
+                const effectsContainer = document.getElementById(`effects-${cryptoId}`);
+                
+                const effectDiv = document.createElement('div');
+                effectDiv.className = 'effect-row';
+                effectDiv.id = effect.id;
+                
+                effectDiv.innerHTML = `
+                    <select class="effect-select" onchange="cryptoGenerator.changeEffectType('${cryptoId}', '${effect.id}', this.value)">
+                        <option value="filter">FILTER</option>
+                        <option value="delay">DELAY</option>
+                        <option value="echo">ECHO</option>
+                        <option value="reverb">REVERB</option>
+                        <option value="distortion">DISTORT</option>
+                    </select>
+                    <div class="effect-label">P1</div>
+                    <input type="range" class="effect-control" min="0" max="1" step="0.01" value="0.5" 
+                           onchange="cryptoGenerator.updateEffectParam('${cryptoId}', '${effect.id}', 'param1', this.value)">
+                    <div class="effect-label">P2</div>
+                    <input type="range" class="effect-control" min="0" max="1" step="0.01" value="0.5"
+                           onchange="cryptoGenerator.updateEffectParam('${cryptoId}', '${effect.id}', 'param2', this.value)">
+                    <button class="remove-effect-btn" onclick="cryptoGenerator.removeEffect('${cryptoId}', '${effect.id}')">X</button>
+                `;
+                
+                effectsContainer.appendChild(effectDiv);
+            }
+
+            changeEffectType(cryptoId, effectId, type) {
+                const crypto = this.cryptos.get(cryptoId);
+                const effect = crypto.effects.find(e => e.id === effectId);
+                if (!effect) return;
+
+                effect.type = type;
+                if (this.isPlaying) {
+                    this.rebuildAudioChain(cryptoId);
+                }
+            }
+
+            updateEffectParam(cryptoId, effectId, param, value) {
+                const crypto = this.cryptos.get(cryptoId);
+                const effect = crypto.effects.find(e => e.id === effectId);
+                if (!effect) return;
+
+                effect[param] = parseFloat(value);
+                if (this.isPlaying && effect.node) {
+                    this.applyEffectParams(effect);
+                }
+            }
+
+            removeEffect(cryptoId, effectId) {
+                const crypto = this.cryptos.get(cryptoId);
+                if (!crypto) return;
+
+                crypto.effects = crypto.effects.filter(e => e.id !== effectId);
+                const effectElement = document.getElementById(effectId);
+                if (effectElement) {
+                    effectElement.remove();
+                }
+
+                if (this.isPlaying) {
+                    this.rebuildAudioChain(cryptoId);
+                }
+
+                this.updateStatus('REMOVED EFFECT');
+            }
+
+            createEffectNode(effect) {
+                if (!this.audioContext) return null;
+
+                let node = null;
+                const { type, param1, param2 } = effect;
+
+                switch (type) {
+                    case 'filter':
+                        node = this.audioContext.createBiquadFilter();
+                        node.type = 'lowpass';
+                        node.frequency.value = 200 + param1 * 8000;
+                        node.Q.value = 0.1 + param2 * 30;
+                        break;
+                        
+                    case 'delay':
+                        node = this.audioContext.createDelay(1);
+                        node.delayTime.value = param1 * 0.5;
+                        break;
+                        
+                    case 'echo':
+                        // Echo is delay with feedback
+                        const delay = this.audioContext.createDelay(1);
+                        const feedback = this.audioContext.createGain();
+                        const wetGain = this.audioContext.createGain();
+                        
+                        delay.delayTime.value = 0.1 + param1 * 0.4; // 100ms to 500ms
+                        feedback.gain.value = param2 * 0.7; // Feedback amount (max 70% to prevent runaway)
+                        wetGain.gain.value = 0.5; // Mix level
+                        
+                        // Create feedback loop: input -> delay -> feedback -> delay
+                        delay.connect(feedback);
+                        feedback.connect(delay);
+                        delay.connect(wetGain);
+                        
+                        // Create a composite node with input and output
+                        node = {
+                            input: delay,
+                            output: wetGain,
+                            delayNode: delay,
+                            feedbackNode: feedback,
+                            wetGainNode: wetGain,
+                            connect: function(destination) { this.output.connect(destination); },
+                            disconnect: function() { 
+                                this.output.disconnect(); 
+                                this.delayNode.disconnect();
+                                this.feedbackNode.disconnect();
+                            }
+                        };
+                        break;
+                        
+                    case 'reverb':
+                        node = this.audioContext.createConvolver();
+                        node.buffer = this.createReverbBuffer(param1, param2);
+                        break;
+                        
+                    case 'distortion':
+                        node = this.audioContext.createWaveShaper();
+                        node.curve = this.createDistortionCurve(param1 * 100);
+                        node.oversample = '4x';
+                        break;
+                }
+
+                return node;
+            }
+
+            applyEffectParams(effect) {
+                if (!effect.node) return;
+
+                const { type, param1, param2, node } = effect;
+
+                try {
+                    switch (type) {
+                        case 'filter':
+                            node.frequency.value = 200 + param1 * 8000;
+                            node.Q.value = 0.1 + param2 * 30;
+                            break;
+                        case 'delay':
+                            node.delayTime.value = param1 * 0.5;
+                            break;
+                        case 'echo':
+                            if (node.delayNode && node.feedbackNode) {
+                                node.delayNode.delayTime.value = 0.1 + param1 * 0.4;
+                                node.feedbackNode.gain.value = param2 * 0.7;
+                            }
+                            break;
+                        case 'reverb':
+                            node.buffer = this.createReverbBuffer(param1, param2);
+                            break;
+                        case 'distortion':
+                            node.curve = this.createDistortionCurve(param1 * 100);
+                            break;
+                    }
+                } catch (error) {
+                    console.error('Error applying effect params:', error);
+                }
+            }
+
+            createReverbBuffer(roomSize, damping) {
+                const sampleRate = this.audioContext.sampleRate;
+                const length = sampleRate * (0.1 + roomSize * 2);
+                const buffer = this.audioContext.createBuffer(2, length, sampleRate);
+                
+                for (let channel = 0; channel < 2; channel++) {
+                    const channelData = buffer.getChannelData(channel);
+                    for (let i = 0; i < length; i++) {
+                        const decay = Math.pow(1 - i / length, 1 + damping * 3);
+                        channelData[i] = (Math.random() * 2 - 1) * decay;
+                    }
+                }
+                
+                return buffer;
+            }
+
+            createDistortionCurve(amount) {
+                const samples = 44100;
+                const curve = new Float32Array(samples);
+                const deg = Math.PI / 180;
+                
+                for (let i = 0; i < samples; i++) {
+                    const x = (i * 2) / samples - 1;
+                    curve[i] = ((3 + amount) * x * 20 * deg) / (Math.PI + amount * Math.abs(x));
+                }
+                
+                return curve;
+            }
+
+            rebuildAudioChain(cryptoId) {
+                const crypto = this.cryptos.get(cryptoId);
+                if (!crypto || !crypto.oscillator) return;
+
+                this.disconnectAudioChain(crypto);
+
+                // Create wet/dry mixing nodes
+                crypto.dryGainNode = this.audioContext.createGain();
+                crypto.wetGainNode = this.audioContext.createGain();
+                crypto.mixerNode = this.audioContext.createGain();
+
+                // Set wet/dry mix levels
+                crypto.dryGainNode.gain.value = 1 - crypto.wetDryMix;
+                crypto.wetGainNode.gain.value = crypto.wetDryMix;
+                crypto.mixerNode.gain.value = 1.0;
+
+                // DRY PATH: oscillator -> dryGain -> mixer
+                crypto.oscillator.connect(crypto.dryGainNode);
+                crypto.dryGainNode.connect(crypto.mixerNode);
+
+                // WET PATH: oscillator -> effects chain -> wetGain -> mixer
+                let currentNode = crypto.oscillator;
+
+                if (crypto.effects.length > 0) {
+                    for (const effect of crypto.effects) {
+                        const effectNode = this.createEffectNode(effect);
+                        if (effectNode) {
+                            effect.node = effectNode;
+                            if (effectNode.input) {
+                                // Handle composite nodes like echo
+                                currentNode.connect(effectNode.input);
+                                currentNode = effectNode.output;
+                            } else {
+                                // Handle simple nodes
+                                currentNode.connect(effectNode);
+                                currentNode = effectNode;
+                            }
+                        }
+                    }
+                    currentNode.connect(crypto.wetGainNode);
+                } else {
+                    // No effects: connect directly to wet gain (will be silent if wetDryMix = 0)
+                    crypto.oscillator.connect(crypto.wetGainNode);
+                }
+
+                crypto.wetGainNode.connect(crypto.mixerNode);
+
+                // Final path: mixer -> gainNode -> pulseNode -> master
+                crypto.mixerNode.connect(crypto.gainNode);
+                crypto.gainNode.connect(crypto.pulseNode);
+                crypto.pulseNode.connect(this.masterGain);
+            }
+
+            disconnectAudioChain(crypto) {
+                // Disconnect effects
+                for (const effect of crypto.effects) {
+                    if (effect.node) {
+                        try {
+                            effect.node.disconnect();
+                        } catch (e) {}
+                        effect.node = null;
+                    }
+                }
+
+                // Disconnect main audio nodes
+                if (crypto.oscillator) {
+                    try {
+                        crypto.oscillator.disconnect();
+                    } catch (e) {}
+                }
+
+                // Disconnect wet/dry mixing nodes
+                if (crypto.dryGainNode) {
+                    try {
+                        crypto.dryGainNode.disconnect();
+                    } catch (e) {}
+                    crypto.dryGainNode = null;
+                }
+
+                if (crypto.wetGainNode) {
+                    try {
+                        crypto.wetGainNode.disconnect();
+                    } catch (e) {}
+                    crypto.wetGainNode = null;
+                }
+
+                if (crypto.mixerNode) {
+                    try {
+                        crypto.mixerNode.disconnect();
+                    } catch (e) {}
+                    crypto.mixerNode = null;
+                }
+            }
+
+            updateCryptoVolume(cryptoId, volume) {
+                const crypto = this.cryptos.get(cryptoId);
+                if (crypto) {
+                    crypto.volume = parseFloat(volume);
+                    if (crypto.gainNode) {
+                        crypto.gainNode.gain.value = crypto.volume;
+                    }
+                    document.getElementById(`volumeValue-${cryptoId}`).textContent = `${Math.round(volume * 100)}%`;
+                }
+            }
+
+            updateBeatVolume(cryptoId, volume) {
+                const crypto = this.cryptos.get(cryptoId);
+                if (crypto) {
+                    crypto.beatVolume = parseFloat(volume);
+                    document.getElementById(`beatValue-${cryptoId}`).textContent = `${Math.round(volume * 100)}%`;
+                }
+            }
+
+            updateWetDryMix(cryptoId, mix) {
+                const crypto = this.cryptos.get(cryptoId);
+                if (crypto) {
+                    crypto.wetDryMix = parseFloat(mix);
+                    if (crypto.dryGainNode && crypto.wetGainNode) {
+                        // Dry signal: full volume when mix = 0, silent when mix = 1
+                        crypto.dryGainNode.gain.value = 1 - crypto.wetDryMix;
+                        // Wet signal: silent when mix = 0, full volume when mix = 1
+                        crypto.wetGainNode.gain.value = crypto.wetDryMix;
+                    }
+                    document.getElementById(`wetdryValue-${cryptoId}`).textContent = `${Math.round(mix * 100)}%`;
+                }
+            }
+
+            updateMasterVolume(volume) {
+                if (this.masterGain) {
+                    this.masterGain.gain.value = volume;
+                }
+                document.getElementById('masterVolumeValue').textContent = `${Math.round(volume * 100)}%`;
+            }
+
+            removeCrypto(cryptoId) {
+                const crypto = this.cryptos.get(cryptoId);
+                if (crypto) {
+                    if (crypto.oscillator) {
+                        crypto.oscillator.stop();
+                    }
+                    if (crypto.beatInterval) {
+                        clearInterval(crypto.beatInterval);
+                    }
+                    this.disconnectAudioChain(crypto);
+                }
+                
+                this.cryptos.delete(cryptoId);
+                const card = document.getElementById(`crypto-${cryptoId}`);
+                if (card) {
+                    card.remove();
+                }
+                
+                this.updateStatus(`REMOVED ${crypto ? crypto.name.split(' ')[0].toUpperCase() : 'CRYPTOCURRENCY'}`);
+            }
+
+            async fetchCryptoData() {
+                try {
+                    const cryptoIds = Array.from(this.cryptos.keys()).join(',');
+                    if (cryptoIds.length === 0) return;
+                    
+                    // Use CORS proxy to avoid CORS issues
+                    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                    const apiUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${cryptoIds}&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true`;
+                    
+                    const response = await fetch(proxyUrl + encodeURIComponent(apiUrl));
+                    const data = await response.json();
+                    
+                    for (const [cryptoId, crypto] of this.cryptos) {
+                        if (data[cryptoId]) {
+                            const oldPrice = crypto.price;
+                            crypto.price = data[cryptoId].usd;
+                            crypto.change = data[cryptoId].usd_24h_change || 0;
+                            crypto.volume24h = data[cryptoId].usd_24h_vol || 0;
+                            
+                            this.updateCryptoDisplay(cryptoId, crypto);
+                            
+                            if (this.isPlaying && oldPrice !== 0) {
+                                this.updateCryptoAudio(crypto, oldPrice);
+                            }
+                            
+                            if (this.isPlaying) {
+                                this.updateBeatPattern(crypto);
+                            }
+                        }
+                    }
+                    
+                    this.updateStatus('CRYPTO DATA UPDATED SUCCESSFULLY');
+                } catch (error) {
+                    console.error('Error fetching crypto data:', error);
+                    // Fallback to mock data if API fails
+                    this.useMockData();
+                }
+            }
+
+            useMockData() {
+                for (const [cryptoId, crypto] of this.cryptos) {
+                    const oldPrice = crypto.price;
+                    
+                    // Generate realistic mock data
+                    if (crypto.price === 0) {
+                        // Initial prices
+                        const mockPrices = {
+                            'bitcoin': 43250,
+                            'ethereum': 2580,
+                            'tether': 1.00,
+                            'binancecoin': 315,
+                            'solana': 98,
+                            'usd-coin': 1.00,
+                            'ripple': 0.61,
+                            'dogecoin': 0.082,
+                            'cardano': 0.48,
+                            'avalanche-2': 38
+                        };
+                        crypto.price = mockPrices[cryptoId] || 100;
+                        crypto.change = (Math.random() - 0.5) * 10; // -5% to +5%
+                        crypto.volume24h = Math.random() * 5000000000; // Random volume
+                    } else {
+                        // Simulate price movement
+                        const priceChange = (Math.random() - 0.5) * 0.02; // ±1% change
+                        crypto.price = crypto.price * (1 + priceChange);
+                        crypto.change = ((crypto.price - oldPrice) / oldPrice) * 100;
+                        crypto.volume24h = Math.random() * 5000000000;
+                    }
+                    
+                    this.updateCryptoDisplay(cryptoId, crypto);
+                    
+                    if (this.isPlaying && oldPrice !== 0) {
+                        this.updateCryptoAudio(crypto, oldPrice);
+                    }
+                    
+                    if (this.isPlaying) {
+                        this.updateBeatPattern(crypto);
+                    }
+                }
+                
+                this.updateStatus('USING SIMULATED CRYPTO DATA (API UNAVAILABLE)');
+            }
+
+            updateCryptoDisplay(cryptoId, crypto) {
+                const priceElement = document.getElementById(`price-${cryptoId}`);
+                const changeElement = document.getElementById(`change-${cryptoId}`);
+                const beatInfoElement = document.getElementById(`beatInfo-${cryptoId}`);
+                
+                if (priceElement) {
+                    priceElement.textContent = `$${crypto.price.toLocaleString()}`;
+                }
+                
+                if (changeElement) {
+                    const changeText = `${crypto.change >= 0 ? '+' : ''}${crypto.change.toFixed(2)}%`;
+                    changeElement.textContent = changeText;
+                    changeElement.className = `crypto-change ${crypto.change >= 0 ? 'positive' : 'negative'}`;
+                }
+
+                if (beatInfoElement) {
+                    const volumeText = crypto.volume24h > 1000000 ? 
+                        `${(crypto.volume24h / 1000000).toFixed(1)}M` : 
+                        `${(crypto.volume24h / 1000).toFixed(0)}K`;
+                    beatInfoElement.textContent = `VOLUME: $${volumeText}`;
+                }
+            }
+
+            updateCryptoAudio(crypto, oldPrice) {
+                if (!crypto.oscillator) return;
+                
+                const priceChangePercent = ((crypto.price - oldPrice) / oldPrice) * 100;
+                const frequencyMultiplier = 1 + (priceChangePercent * 0.01);
+                const newFrequency = Math.max(100, Math.min(1000, crypto.frequency * frequencyMultiplier));
+                
+                crypto.oscillator.frequency.setValueAtTime(newFrequency, this.audioContext.currentTime);
+            }
+
+            updateBeatPattern(crypto) {
+                if (crypto.beatInterval) {
+                    clearInterval(crypto.beatInterval);
+                }
+
+                // Create pulsing effect based on trading volume
+                const volumeNormalized = Math.min(crypto.volume24h / 5000000000, 1); // Normalized 0-1
+                const pulseRate = 200 + (volumeNormalized * 800); // 200ms to 1000ms between pulses
+
+                console.log(`Setting up pulse for ${crypto.id}: volume=${volumeNormalized.toFixed(3)}, rate=${pulseRate}ms, intensity=${crypto.beatVolume}`);
+
+                if (crypto.beatVolume > 0 && crypto.pulseNode) {
+                    crypto.beatInterval = setInterval(() => {
+                        this.createPulse(crypto, volumeNormalized);
+                    }, pulseRate);
+                }
+            }
+
+            createPulse(crypto, volumeIntensity) {
+                if (!crypto.pulseNode || crypto.beatVolume === 0) return;
+
+                const currentTime = this.audioContext.currentTime;
+                const pulseDuration = 0.05 + (volumeIntensity * 0.15); // 50ms to 200ms pulse
+                const pulseDepth = crypto.beatVolume; // How much to modulate (0-1)
+                
+                // Base level is 1.0, pulse goes up
+                const baseLevel = 1.0;
+                const pulseLevel = 1.0 + (pulseDepth * volumeIntensity * 2); // Up to 3x volume boost
+                
+                console.log(`Pulse: ${crypto.id} from ${baseLevel} to ${pulseLevel.toFixed(2)} over ${pulseDuration.toFixed(3)}s`);
+                
+                // Create smooth pulse envelope
+                crypto.pulseNode.gain.cancelScheduledValues(currentTime);
+                crypto.pulseNode.gain.setValueAtTime(baseLevel, currentTime);
+                crypto.pulseNode.gain.linearRampToValueAtTime(pulseLevel, currentTime + pulseDuration * 0.3);
+                crypto.pulseNode.gain.linearRampToValueAtTime(baseLevel, currentTime + pulseDuration);
+            }
+
+            playBeat(crypto) {
+                if (!this.audioContext || crypto.beatVolume === 0) return;
+
+                const osc = this.audioContext.createOscillator();
+                const gain = this.audioContext.createGain();
+                
+                const beatFreq = crypto.frequency / 4;
+                
+                osc.frequency.setValueAtTime(beatFreq, this.audioContext.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(beatFreq * 0.5, this.audioContext.currentTime + 0.1);
+                
+                gain.gain.setValueAtTime(crypto.beatVolume * 0.3, this.audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+                
+                osc.connect(gain);
+                gain.connect(this.masterGain);
+                
+                osc.start(this.audioContext.currentTime);
+                osc.stop(this.audioContext.currentTime + 0.1);
+            }
+
+            async toggleAudio() {
+                if (!this.isPlaying) {
+                    await this.startAudio();
+                } else {
+                    this.stopAudio();
+                }
+            }
+
+            async startAudio() {
+                if (this.cryptos.size === 0) {
+                    this.updateStatus('PLEASE ADD AT LEAST ONE CRYPTOCURRENCY FIRST');
+                    return;
+                }
+
+                try {
+                    await this.initializeAudioContext();
+                    
+                    for (const [cryptoId, crypto] of this.cryptos) {
+                        crypto.oscillator = this.audioContext.createOscillator();
+                        crypto.gainNode = this.audioContext.createGain();
+                        crypto.pulseNode = this.audioContext.createGain();
+                        
+                        crypto.oscillator.type = 'sine';
+                        crypto.oscillator.frequency.value = crypto.frequency;
+                        crypto.gainNode.gain.value = crypto.volume;
+                        crypto.pulseNode.gain.value = 1.0; // Base pulse level
+                        
+                        // Build complete audio chain with wet/dry mixing
+                        this.rebuildAudioChain(cryptoId);
+                        
+                        crypto.oscillator.start();
+                        
+                        // Start pulsing if enabled
+                        this.updateBeatPattern(crypto);
+                    }
+                    
+                    this.isPlaying = true;
+                    document.getElementById('toggleAudio').textContent = 'STOP AUDIO';
+                    
+                    this.updateInterval = setInterval(() => {
+                        this.fetchCryptoData();
+                    }, 30000);
+                    
+                    this.updateStatus('AUDIO STARTED. YOU SHOULD HEAR TONES NOW.');
+                    
+                } catch (error) {
+                    console.error('Error starting audio:', error);
+                    this.updateStatus('ERROR STARTING AUDIO. TRY CLICKING START AGAIN.');
+                }
+            }
+
+            stopAudio() {
+                for (const [cryptoId, crypto] of this.cryptos) {
+                    if (crypto.oscillator) {
+                        crypto.oscillator.stop();
+                        crypto.oscillator = null;
+                        crypto.gainNode = null;
+                        crypto.pulseNode = null;
+                    }
+                    if (crypto.beatInterval) {
+                        clearInterval(crypto.beatInterval);
+                        crypto.beatInterval = null;
+                    }
+                    this.disconnectAudioChain(crypto);
+                }
+                
+                if (this.updateInterval) {
+                    clearInterval(this.updateInterval);
+                    this.updateInterval = null;
+                }
+                
+                this.isPlaying = false;
+                document.getElementById('toggleAudio').textContent = 'START AUDIO';
+                this.updateStatus('AUDIO STOPPED.');
+            }
+
+            updateStatus(message) {
+                document.getElementById('status').textContent = message;
+                console.log(message);
+            }
+        }
+
+        const cryptoGenerator = new CryptoAudioGenerator();
+        
+        window.addEventListener('load', () => {
+                            cryptoGenerator.updateStatus('CRYPTO RODEO LOADED. ADD CRYPTOCURRENCIES TO BEGIN.');
+        });
+    </script>
+</body>
+</html>
